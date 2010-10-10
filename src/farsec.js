@@ -22,149 +22,116 @@
 */
 
 // Returns a parser that parses a string
-function string(tok)
-{
-  return function(input)
-  {
-    if(tok == "")
-    {
+function string(tok) {
+  return function(input) {
+    if(tok == "") {
       return {rest: input,
               parsed: tok,
               ast: null};
     }
 
-    if(input.substr(0, tok.length) == tok)
-    {
+    if(input.substr(0, tok.length) == tok) {
       return {rest: input.substr(tok.length, input.length - tok.length),
               parsed: tok,
               ast: tok};
     }
-    else
-    {
+    else {
       return false;
     }
   };
 }
 
 // Returns a parser that parses a single letter
-function letter()
-{
-  return function(input)
-  {
-    if(input.charAt(0).search(/[a-zA-Z]/) != -1)
-    {
+function letter() {
+  return function(input) {
+    if(input.charAt(0).search(/[a-zA-Z]/) != -1) {
       return {rest: input.substr(1, input.length - 1),
               parsed: input.charAt(0),
               ast: input.charAt(0)};
     }
-    else
-    {
+    else {
       return false;
     }
   };
 }
 
 // Returns a parser that parses a single digit
-function digit()
-{
-  return function(input)
-  {
-    if(input.charAt(0).search(/[0-9]/) != -1)
-    {
+function digit() {
+  return function(input) {
+    if(input.charAt(0).search(/[0-9]/) != -1) {
       return {rest: input.substr(1, input.length - 1),
               parsed: input.charAt(0),
               ast: input.charAt(0)};
     }
-    else
-    {
+    else {
       return false;
     }
   };
 }
 
 // Returns a parser that parses any character that's not in the input
-function noneOf(chars)
-{
-  return function(input)
-  {
+function noneOf(chars) {
+  return function(input) {
     var match = new RegExp('[^' + chars + ']');
-    if(input.charAt(0).search(match) != -1)
-    {
+    if(input.charAt(0).search(match) != -1) {
       return {rest: input.substr(1, input.length - 1),
               parsed: input.charAt(0),
               ast: input.charAt(0)};
     }
-    else
-    {
+    else {
       return false;
     }
   };
 }
 
 // Returns a parser that parses any character that's in the input
-function oneOf(chars)
-{
-  return function(input)
-  {
+function oneOf(chars) {
+  return function(input) {
     var match = new RegExp('[' + chars + ']');
-    if(input.charAt(0).search(match) != -1)
-    {
+    if(input.charAt(0).search(match) != -1) {
       return {rest: input.substr(1, input.length - 1),
               parsed: input.charAt(0),
               ast: input.charAt(0)};
     }
-    else
-    {
+    else {
       return false;
     }
   };
 }
 
 // Returns the first successful parse
-function or()
-{
+function or() {
   var items = arguments;
-  return function(input)
-  {
-    for(var i = 0; i < items.length; i++)
-    {
+  return function(input) {
+    for(var i = 0; i < items.length; i++) {
       var result = items[i](input);
-      if(result != false)
-      {
+      if(result != false) {
         return result;
       }
-        }
+    }
     return false;
   };
 }
 
 // Returns a parser that parses 1 or more times using the parser passed in
-function many1(parser)
-{
-  return function(input)
-  {
+function many1(parser) {
+  return function(input) {
     var value = {rest: input, parsed: '', ast: []};
-    for(var i = 0; true; i++)
-    {
+    for(var i = 0; true; i++) {
       var result = parser(value.rest);
-      if(result != false)
-      {
-        if(result.ast != null)
-        {
+      if(result != false) {
+        if(result.ast != null) {
           value.ast.push(result.ast);
         }
-            value = {rest: result.rest,
-                     parsed: value.parsed + result.parsed,
-                     ast: value.ast};
+        value = {rest: result.rest,
+                 parsed: value.parsed + result.parsed,
+                 ast: value.ast};
       }
-      else
-      {
-        if(value.parsed == '')
-        {
+      else {
+        if(value.parsed == '') {
           return false;
         }
-        else
-        {
+        else {
           break;
         }
       }
@@ -174,28 +141,21 @@ function many1(parser)
 }
 
 // Returns a parser that parses 0 or more times using the parser passed in
-function many(parser)
-{
-  return function(input)
-  {
+function many(parser) {
+  return function(input) {
     var value = {rest: input, parsed: '', ast: []};
-    for(var i = 0; true; i++)
-    {
+    for(var i = 0; true; i++) {
       var result = parser(value.rest);
-      if(result != false)
-      {
-        if(result.ast != null)
-        {
+      if(result != false) {
+        if(result.ast != null) {
           value.ast.push(result.ast);
         }
         value = {rest: result.rest,
                  parsed: value.parsed + result.parsed,
                  ast: value.ast};
       }
-      else
-      {
-        if(value.parsed == '')
-        {
+      else {
+        if(value.parsed == '') {
           value = {rest: value.rest,
                    parsed: '',
                    ast: null};
@@ -208,28 +168,22 @@ function many(parser)
 }
 
 // Returns a parser that runs each parser in order
-function and()
-{
+function and() {
   var items = arguments;
-  return function(input)
-  {
+  return function(input) {
     var value = {rest: input, parsed: '', ast: []};
-    for(var i = 0; i < items.length; i++)
-    {
+    for(var i = 0; i < items.length; i++) {
       var result = items[i](value.rest);
-      if(result != false)
-      {
+      if(result != false) {
         var rst = result.rest;
-        if(result.ast != null)
-        {
+        if(result.ast != null) {
           value.ast.push(result.ast);
         }
         value = {rest: rst,
                  parsed: value.parsed + result.parsed,
                  ast: value.ast};
       }
-      else
-      {
+      else {
         return false;
       }
     }
@@ -238,42 +192,33 @@ function and()
 }
 
 // Takes the result of a parser and copies the parsed string to ast
-function makeStr(parser)
-{
-  return function(input)
-  {
+function makeStr(parser) {
+  return function(input) {
     var result = parser(input);
-    if(result != false)
-    {
-      if(result.parsed != '')
-      {
+    if(result != false) {
+      if(result.parsed != '') {
         return {rest: result.rest,
                 parsed: result.parsed,
                 ast: result.parsed};
       }
-      else
-      {
+      else {
         return {rest: result.rest,
                 parsed: result.parsed,
                 ast: null};
       }
     }
-    else
-    {
+    else {
       return false;
     }
   };
 }
 
 // Returns a parser that parses a list of items separated by a list of other items
-function sepBy(parser, separator)
-{
-  return function(input)
-  {
+function sepBy(parser, separator) {
+  return function(input) {
     var obj = {rest: input, parsed: '', ast: []};
     var firstParse = parser(obj.rest);
-    if(firstParse == false)
-    {
+    if(firstParse == false) {
       obj.ast = null;
       return obj;
     }
@@ -282,12 +227,9 @@ function sepBy(parser, separator)
     obj.parsed = obj.parsed + firstParse.parsed;
 
     var rest = (many(and(separator, parser)))(obj.rest);
-    if(rest != false)
-    {
-      if(rest.ast != null)
-      {
-        for(var i = 0; i < rest.ast.length; i++)
-        {
+    if(rest != false) {
+      if(rest.ast != null) {
+        for(var i = 0; i < rest.ast.length; i++) {
           obj.ast.push(rest.ast[i][0]);
           obj.ast.push(rest.ast[i][1]);
         }
@@ -301,19 +243,15 @@ function sepBy(parser, separator)
 }
 
 // Returns a parser that replaces a parser's ast
-function ret(parser, func)
-{
-  return function(input)
-  {
+function ret(parser, func) {
+  return function(input) {
     var result = parser(input);
-    if(result != false)
-    {
+    if(result != false) {
       return {rest: result.rest,
               parsed: result.parsed,
               ast: func(result.ast)};
     }
-        else
-    {
+    else {
       return false;
     }
   };
