@@ -43,7 +43,7 @@ function string(tok)
         {
             return false;
         }
-    }
+    };
 }
 
 // Returns a parser that parses a single letter
@@ -61,7 +61,7 @@ function letter()
         {
             return false;
         }
-    }
+    };
 }
 
 // Returns a parser that parses a single digit
@@ -79,7 +79,7 @@ function digit()
         {
             return false;
         }
-    }
+    };
 }
 
 // Returns a parser that parses any character that's not in the input
@@ -98,7 +98,7 @@ function noneOf(chars)
         {
             return false;
         }
-    }
+    };
 }
 
 // Returns a parser that parses any character that's in the input
@@ -117,7 +117,7 @@ function oneOf(chars)
         {
             return false;
         }
-    }
+    };
 }
 
 // Returns the first successful parse
@@ -135,7 +135,7 @@ function or()
             }
         }
         return false;
-    }
+    };
 }
 
 // Returns a parser that parses 1 or more times using the parser passed in
@@ -170,7 +170,7 @@ function many1(parser)
             }
         }
         return value;
-    }
+    };
 }
 
 // Returns a parser that parses 0 or more times using the parser passed in
@@ -204,7 +204,7 @@ function many(parser)
             }
         }
         return value;
-    }
+    };
 }
 
 // Returns a parser that runs each parser in order
@@ -234,7 +234,7 @@ function and()
             }
         }
         return value;
-    }
+    };
 }
 
 // Takes the result of a parser and copies the parsed string to ast
@@ -262,7 +262,7 @@ function makeStr(parser)
         {
             return false;
         }
-    }
+    };
 }
 
 // Returns a parser that parses a list of items separated by a list of other items
@@ -297,7 +297,7 @@ function sepBy(parser, separator)
         }
 
         return obj;
-    }
+    };
 }
 
 // Returns a parser that replaces a parser's ast
@@ -316,7 +316,7 @@ function ret(parser, func)
         {
             return false;
         }
-    }
+    };
 }
 
 
